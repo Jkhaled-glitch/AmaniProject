@@ -7,13 +7,11 @@ const cors = require('cors');
 app.use(express.json())
 app.use(cors());
 
-
 const userRoute     = require('./routers/user')
 const employeeRoute = require('./routers/employee')
 const projectRoute  = require('./routers/project')
 const taskRoute  = require('./routers/task')
 const adminRoute  = require('./routers/admin')
-
 
 //connect to DB
 require('./config/connectDB')

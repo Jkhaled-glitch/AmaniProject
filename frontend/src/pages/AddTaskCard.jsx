@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 
 const AddProjectCard = ({ onAddTask,projectId}) => {
   const [taskData, setTaskData] = useState({
-    title:'',
-    projectId:projectId
+    Title:'',
+    projectId:projectId,
+
   });
 
   const handleInputChange = (e) => {
@@ -13,7 +14,7 @@ const AddProjectCard = ({ onAddTask,projectId}) => {
   };
 
   const handleSubmit = () => {
-    // Call the onAddProject function passed from the parent component (Projects)
+  
     onAddTask(taskData);
   };
 
@@ -25,10 +26,16 @@ const AddProjectCard = ({ onAddTask,projectId}) => {
           type="text"
           name="title"
           placeholder="Task Title"
-          value={taskData.title}
+          value={taskData.Title}
           onChange={handleInputChange}
         />
-        
+        <input
+          type="color"
+          name="Color"
+         
+          value={taskData.Color}
+          onChange={handleInputChange}
+        />
       </div>
       <button onClick={handleSubmit}>Add Task</button>
     </div>
