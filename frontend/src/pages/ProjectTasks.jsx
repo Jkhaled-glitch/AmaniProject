@@ -32,7 +32,7 @@ const Kanban = () => {
         <KanbanComponent
           id="kanban"
           keyField="Status"
-          dataSource= {tasks} // Replace 'data' with 'tasks' here
+          dataSource= {tasks} 
           cardSettings={{
             contentField: 'Summary',
             headerField: 'Title',
