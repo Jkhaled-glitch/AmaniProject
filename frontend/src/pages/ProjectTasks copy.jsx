@@ -84,28 +84,7 @@ const Kanban = () => {
     navigate('/editor'); // Update the path as per your route configuration
   };
 
-  const [isEditModalVisible, setEditModalVisible] = useState(false);
 
-  // Step 2: Create a function to toggle the visibility of the Edit Task popup
-  const toggleEditModal = () => {
-    setEditModalVisible(!isEditModalVisible);
-  };
-
-  // Step 3: Modify the Kanban card template to include the Edit Task button and handle its click event
-  const handleEditTask = (task) => {
-    setFormValues(task);
-    toggleEditModal();
-  };
-
-  const handleDeleteTask = async (taskId) => {
-    try {
-      await axios.delete(`http://localhost:5000/tasks/${taskId}`);
-      // Optionally, you can fetch the updated tasks data here
-      fetchTasks();
-    } catch (error) {
-      console.error(error);
-    }
-  };
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header category="App" title="Kanban" />
@@ -118,7 +97,6 @@ const Kanban = () => {
         >
           Add Task
         </button>
-
       </div>
         <KanbanComponent
           id="kanban"
@@ -139,22 +117,10 @@ const Kanban = () => {
                 <button style={{ backgroundColor: 'rgb(245, 245, 220)', color: 'black'}} onClick={handleJoinFile}>
                 Join File
               </button>
-              <button
-                style={{ backgroundColor: 'rgb(245, 245, 220)', color: 'black' }}
-                onClick={() => handleEditTask(task)} // Step 3: Call the handleEditTask function
-              >
-                Edit Task
-              </button>
-              <button
-                style={{ backgroundColor: 'rgb(245, 220, 220)', color: 'black', marginRight: '5px' }}
-                onClick={() => handleDeleteTask(task.id)} // Step 6: Add onClick event to delete the task
-              >
-                Delete Task
-        </button>
               </div>
             ),
           }}
-         /* dialogSettings={{
+          dialogSettings={{
             fields: [
               { key: '_id', type: 'TextBox' },
               { key: 'Title', type: 'TextBox' },
@@ -166,7 +132,7 @@ const Kanban = () => {
               { key: 'CreatedBy', type: 'TextBox' },
               
             ],
-          }}*/
+          }}
         >
           <ColumnsDirective>
             {kanbanGrid.map((item, index) => (
@@ -349,161 +315,13 @@ const Kanban = () => {
         </div>
       )}
 
-        {/* Step 4: Edit Task Modal */}
-        {isEditModalVisible && (
-  <div className="modal-container">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Edit Task
-        </h3>
-        <button
-          onClick={toggleEditModal} // Step 5: Add onClick event to close the modal
-          className="modal-close-button"
-          data-modal-hide="defaultModal"
-        >
-          <svg
-            className="w-3 h-3"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 14"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-            />
-          </svg>
-          <span className="sr-only">Close modal</span>
-        </button>
-      </div>
-      <div className="modal-body">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="Title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Title
-              </label>
-              <input
-                type="text"
-                name="Title"
-                id="Title"
-                value={formValues.Title}
-                onChange={handleInputChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="Title"
-                required
-              />
-            </div>
-            {/* Repeat for other form fields */}
-            <div>
-              <label htmlFor="Priority" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Priority
-              </label>
-              <input
-                type="text"
-                name="Priority"
-                id="Priority"
-                value={formValues.Priority}
-                onChange={handleInputChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="Priority"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="Status" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Status
-              </label>
-              <input
-                type="text"
-                name="Status"
-                id="Status"
-                value={formValues.Status}
-                onChange={handleInputChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="Status"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="Summary" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Summary
-              </label>
-              <input
-                type="text"
-                name="Summary"
-                id="Summary"
-                value={formValues.Summary}
-                onChange={handleInputChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="Summary"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="CreationDate" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                CreationDate
-              </label>
-              <input
-                type="text"
-                name="CreationDate"
-                id="CreationDate"
-                value={formValues.CreationDate}
-                onChange={handleInputChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="CreationDate"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="ExpirationDate" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                ExpirationDate
-              </label>
-              <input
-                type="text"
-                name="ExpirationDate"
-                id="ExpirationDate"
-                value={formValues.ExpirationDate}
-                onChange={handleInputChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="ExpirationDate"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="CreatedBy" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                CreatedBy
-              </label>
-              <input
-                type="text"
-                name="CreatedBy"
-                id="CreatedBy"
-                value={formValues.CreatedBy}
-                onChange={handleInputChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="CreatedBy"
-                required
-              />
-            </div>
-            <div className="modal-footer">
-              <button
-                data-modal-hide="defaultModal"
-                type="submit"
-                className="text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
-              >
-                Submit
-                </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  )}
+  
+
+
     </div>
   );
 };
 
 export default Kanban;
+
+

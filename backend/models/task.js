@@ -25,9 +25,7 @@ const Task = mongoose.model('task',{
     ExpirationDate: {
         type: Date,
     },
-    Color : {
-        type:String,
-    }
+
 
    
 })

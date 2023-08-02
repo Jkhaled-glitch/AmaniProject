@@ -42,14 +42,6 @@ const Kanban = () => {
     CreatedBy: '',
   });
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormValues((prevFormValues) => ({
-      ...prevFormValues,
-      [name]: value,
-    }));
-  };
-
   // Step 2: Create a function to toggle the visibility of the edit task popup
   const toggleEditModal = () => {
     setEditModalVisible(!isEditModalVisible);
@@ -65,9 +57,8 @@ const Kanban = () => {
   const handleSubmitEditTask = async (event) => {
     event.preventDefault();
     try {
-      const taskIdToUpdate = formValues.id; // Assuming your formValues object contains an 'id' field
-      const response = await axios.put(`http://localhost:5000/tasks/${taskIdToUpdate}`, formValues);
-      console.log('Updated task:', response.data);
+      // Implement your API call here to update the task with formValues data
+      console.log('Updated task:', formValues);
       closeModal();
     } catch (error) {
       console.error(error);
@@ -77,15 +68,6 @@ const Kanban = () => {
   // Function to close the edit task popup
   const closeModal = () => {
     setEditModalVisible(false);
-  };
-  const handleDeleteTask = async (taskId) => {
-    try {
-      await axios.delete(`http://localhost:5000/tasks/${taskId}`);
-      // Optionally, you can fetch the updated tasks data here
-      fetchTasks();
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   return (
@@ -117,12 +99,6 @@ const Kanban = () => {
               >
                 Edit Task
               </button>
-              <button
-                style={{ backgroundColor: 'rgb(245, 220, 220)', color: 'black', marginRight: '5px' }}
-                onClick={() => handleDeleteTask(task.id)} // Step 6: Add onClick event to delete the task
-              >
-                Delete Task
-        </button>
             </div>
           ),
         }}
@@ -172,7 +148,7 @@ const Kanban = () => {
               </button>
             </div>
             <div className="modal-body">
-            <form className="space-y-6" onSubmit={handleSubmitEditTask}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="Title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Title

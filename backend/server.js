@@ -12,6 +12,8 @@ const employeeRoute = require('./routers/employee')
 const projectRoute  = require('./routers/project')
 const taskRoute  = require('./routers/task')
 const adminRoute  = require('./routers/admin')
+const calendarRoute  = require('./routers/calendar')
+
 
 //connect to DB
 require('./config/connectDB')
@@ -22,6 +24,8 @@ app.use('/employees',employeeRoute);
 app.use('/projects',projectRoute);
 app.use('/tasks',taskRoute);
 app.use('/admins',adminRoute);
+app.use('/calendars',calendarRoute);
+
 
 //
 app.use('/uploads',express.static('./uploads'))
