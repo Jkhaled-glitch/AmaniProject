@@ -25,10 +25,14 @@ const Task = mongoose.model('task',{
     ExpirationDate: {
         type: Date,
     },
-    Color : {
-        type:String,
-    }
+    Color: {
+        type: String,
+    },
+    Description: {
+        type: String,
+    },
 
+    
    
 })
 module.exports= Task;

@@ -25,7 +25,7 @@ router.post('/addemployee',async(req, res,next) => {
 })
 
  router.get('/projects/:id', async (req, res) => {
-   console.log("hello");
+
      const employeeidd = req.params.id;   
      try {
         const employee = await Employee.findOne({ _id: employeeidd });

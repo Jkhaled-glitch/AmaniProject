@@ -48,8 +48,7 @@ router.get('/:id', async (req, res) => {
                 }
                 myToken = jwt.sign(payload,"1234")
 
-                res.status(200).send({token : myToken
-                    ,accountType: user.accountType}) 
+                res.status(200).send(myToken) 
             }
         }
     }catch(err){

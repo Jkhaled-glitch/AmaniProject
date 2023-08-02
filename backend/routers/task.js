@@ -3,25 +3,7 @@ const router = express.Router();
 
 const Task= require('../models/task')
 
-router.post('/add',async(req, res,next) => {
 
-  const Title = req.body.Title;
-  const ProjectId = req.body.ProjectId;
-  const Status = req.body.Status;
-  const Priority = req.body.Priority;
-  const CreatedBy = req.body.CreatedBy;
-  const Summary = req.body.Summary;
-  const CreationDate = req.body.CreationDate;
-  const ExpirationDate = req.body.ExpirationDate;
- 
-  try{
-     const task = new Task({Title,ProjectId,Status,Priority,CreatedBy,Summary,CreationDate,ExpirationDate});
-    await task.save();
-    res.send("successfully added task")
- } catch (err) {
-    res.send(err);
-  }
-});
 
 
 router.get('/', async (req, res) => {
@@ -80,8 +62,26 @@ router.get('/', async (req, res) => {
             }
           });
 
-
-            
-
+          router.post('/add/:id', async (req, res) => {
+            const Title = req.body.Title;
+            const ProjectId = req.params.id; // Access the dynamic 'id' parameter from the URL
+            const Status = req.body.Status;
+            const Priority = req.body.Priority;
+            const CreatedBy = req.body.CreatedBy;
+            const Summary = req.body.Summary;
+            const CreationDate = req.body.CreationDate;
+            const ExpirationDate = req.body.ExpirationDate;
+            const Color = req.body.Color;
+            const Description = req.body.Description;
+          
+            try {
+              const task = new Task({Title, ProjectId, Status, Priority, CreatedBy, Summary, CreationDate,ExpirationDate,Color,Description});
+              await task.save();
+              res.send("Successfully added task");
+            } catch (err) {
+              res.send(err);
+            }
+          });
+          
 
               module.exports= router

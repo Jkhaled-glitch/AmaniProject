@@ -8,8 +8,9 @@ router.post('/addproject',async(req, res,next) => {
  const employeename = req.body.employeename;
  const status = req.body.status;
  const tasks = req.body.tasks;
+ const employeeEmail = req.body.employeeEmail;
  try{
-    const project = new Project({projecttitle,employeename,status,tasks});
+    const project = new Project({projecttitle,employeename,status,tasks,employeeEmail});
     await project.save();
     res.send("successfully added")
  } catch (err) {
@@ -68,15 +69,25 @@ router.get('/:id/tasks', async (req, res) => {
               }
             });
 
-            router.get('/:id', async (req, res) => {
-                const id = req.params.id;
-                try {
-                geted = await Project.findOne({ _id: id });
-                res.send(geted);
-                } catch (err) {
-                res.send(err);
-                }
-            });
+      router.get('/:id', async (req, res) => {
+          const id = req.params.id;
+          try {
+          geted = await Project.findOne({ _id: id });
+          res.send(geted);
+          } catch (err) {
+          res.send(err);
+          }
+      });
+
+      router.get('/getbyuseremail/:email', async (req, res) => {
+        const email = req.params.email;
+        try {
+        geted = await Project.find({employeeEmail: email });
+        res.send(geted);
+        } catch (err) {
+        res.send(err);
+        }
+    });
 
 
             

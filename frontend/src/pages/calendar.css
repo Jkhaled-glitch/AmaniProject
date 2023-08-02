@@ -1,0 +1,91 @@
+
+
+/* Styling for the grid container */
+.grid-container {
+    position: relative;
+    overflow: auto;
+    max-height: calc(100vh - 240px); /* Adjust the max height as needed */
+  }
+  
+  /* Styling for the table */
+  .table-container {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Styling for the sticky button at the top right corner */
+  .sticky-button {
+    position: sticky;
+    top: 0;
+    right: 0;
+    z-index: 2; /* Increase the z-index to bring the button above the table */
+    padding: 4px; /* Adjust the padding as needed */
+  }
+  
+  /* Additional styling for the button */
+  .sticky-button button {
+    color: white;
+    font-size: 12px; /* Adjust the font-size as needed */
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  
+    /* Add styles to move the button to the right */
+    float: right;
+  
+    /* Add margin to create space */
+    margin-top: -80px;
+  }
+  
+  /* Styling for the main modal container */
+  .modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    z-index: 3; /* Ensure the modal is above the table */
+  }
+  
+  /* Styling for the modal content */
+  .modal-content {
+    width: 80%;
+    max-width: 400px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  /* Styling for the modal header */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Styling for the modal close button */
+  .modal-close-button {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    background-color: #f1f1f1;
+  }
+  
+  /* Styling for the modal body */
+  .modal-body {
+    margin-bottom: 20px;
+  }
+  
+  /* Styling for the modal footer */
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  

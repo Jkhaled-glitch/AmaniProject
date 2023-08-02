@@ -154,6 +154,7 @@ const Projects = () => {
           actionComplete={handleDelete}
         >
           <ColumnsDirective>
+            <ColumnDirective type="checkbox" width="50" />
             <ColumnDirective field="projecttitle" headerText="Project Title" />
             <ColumnDirective field="employeename" headerText="Employee Name" />
             <ColumnDirective field="status" headerText="Status" />

@@ -40,9 +40,9 @@ const Home = () => {
 
   </div>
 
-<Pie/>
-<Line/>
-<Bar/>
+    <Pie/>
+    <Line/>
+    <Bar/>
   </div>
 
 

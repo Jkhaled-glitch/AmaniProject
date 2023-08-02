@@ -14,6 +14,9 @@ const Project = mongoose.model('project',{
     tasks: {
         type: Array
     },
+    employeeEmail: {
+        type:String
+    }
     
 })
 module.exports= Project;

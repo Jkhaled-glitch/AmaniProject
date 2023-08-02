@@ -26,10 +26,6 @@ useEffect(() => {
 
   
   const navigate = useNavigate()
-
-  
-    
-  
   const [res, setRes] = useState({
     email: "",
     password: "",
@@ -72,7 +68,6 @@ useEffect(() => {
   
             // Effectuer vos actions après la connexion réussie
             dispatch( { type: "LOGIN", payload: user } );
-            console.log(window.localStorage)
             navigate("/");
           } else{
             if (response.status === 404) {
