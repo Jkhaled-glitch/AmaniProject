@@ -17,8 +17,15 @@ import { customersData, customersGrid } from '../data/dummy';
 import { Header } from '../components';
 //import './employees.css';
 import React, { useState, useEffect } from 'react';
+import jwtDecode from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const Employees = () => {
+
+  const token = localStorage.getItem('user');
+  const decodedToken = jwtDecode(token);
+  const { _id, email, accountType } = decodedToken;
+
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -37,15 +44,15 @@ const Employees = () => {
     const { name, value } = event.target;
     setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
   };
-   
- const handleAddEmployee = async (employeeData) => {
-  try {
-    const response = await axios.post('http://localhost:5000/employees/addemployee', employeeData);
-    console.log(response.data); // Output the response message from the backend
-  } catch (error) {
-    console.error(error);
-  }
-};
+
+  const handleAddEmployee = async (employeeData) => {
+    try {
+      const response = await axios.post('http://localhost:5000/employees/addemployee', employeeData);
+      console.log(response.data); // Output the response message from the backend
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSubmit = async (event) => {
     console.log("submit")
@@ -60,13 +67,17 @@ const Employees = () => {
     }
   };
   //
-  
+
   const closeModal = () => {
     setModalVisible(false);
   };
+  const navigate = useNavigate()
 
   // Utilize the hook useEffect to execute fetchEmployees once the component is mounted
   useEffect(() => {
+    if (accountType != 'admin')
+      navigate('/')
+
     let isMounted = true; // Add a variable to track if the component is mounted
 
     fetchEmployees()
@@ -92,7 +103,7 @@ const Employees = () => {
       const response = await axios.get('http://localhost:5000/employees');
       setEmployees(response.data);
 
-       // Update the state of employees with the data received from the backend
+      // Update the state of employees with the data received from the backend
     } catch (error) {
       console.error(error);
     }
@@ -100,12 +111,12 @@ const Employees = () => {
 
   // Function to handle the delete operation
   const handleDelete = async (args) => {
- 
+
     const data = args.data; // Get the data object from the event arguments
     try {
       for (let employee of data) {
         const employeeId = employee._id;
-            await axios.delete(`http://localhost:5000/employees/${employeeId}`)
+        await axios.delete(`http://localhost:5000/employees/${employeeId}`)
       }
       fetchEmployees();
     } catch (error) {
@@ -117,10 +128,10 @@ const Employees = () => {
     const data = args.data; // Get the data object from the event arguments
     console.log(data)
     try {
-      
-        const employeeId = data._id;
-        await axios.put(`http://localhost:5000/employees/${employeeId}`, data);
-      
+
+      const employeeId = data._id;
+      await axios.put(`http://localhost:5000/employees/${employeeId}`, data);
+
       fetchEmployees(); // Fetch the updated data after successful update
     } catch (error) {
       console.error(error);
@@ -134,7 +145,7 @@ const Employees = () => {
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header category="Page" title="Employees" />
-       {/* Modal toggle button */}
+      {/* Modal toggle button */}
       <div className="sticky-button">
         <button
           onClick={toggleModal}
@@ -147,38 +158,38 @@ const Employees = () => {
 
       {/* GridComponent */}
       <div className="table-container">
-      <GridComponent
-        dataSource={employees}
-        allowPaging
-        allowSorting
-        allowEditing  // Set allowEditing to true to enable editing
-        toolbar={['Search', 'Delete', 'Update']} // Add 'Update' in the toolbar for the update operation
-        width="auto"
-        editSettings={{ allowDeleting: true, allowEditing: true }} // Already set in the original code
-        actionBegin={handleUpdate} // Call handleUpdate when an update operation begins
-        actionComplete={handleDelete} // Call handleDelete when a delete operation is completed
-      >
-        <ColumnsDirective>
-          {customersGrid.map((item, index) => (
-            <ColumnDirective key={index} {...item} />
-          ))}
-        </ColumnsDirective>
-        <Inject
-          services={[Page, Search, Selection, Toolbar, Edit, Sort, Filter]}
-        />
-      </GridComponent>
-    </div>
-{/* Main modal */}
-{isModalVisible && (
+        <GridComponent
+          dataSource={employees}
+          allowPaging
+          allowSorting
+          allowEditing  // Set allowEditing to true to enable editing
+          toolbar={['Search', 'Delete', 'Update']} // Add 'Update' in the toolbar for the update operation
+          width="auto"
+          editSettings={{ allowDeleting: true, allowEditing: true }} // Already set in the original code
+          actionBegin={handleUpdate} // Call handleUpdate when an update operation begins
+          actionComplete={handleDelete} // Call handleDelete when a delete operation is completed
+        >
+          <ColumnsDirective>
+            {customersGrid.map((item, index) => (
+              <ColumnDirective key={index} {...item} />
+            ))}
+          </ColumnsDirective>
+          <Inject
+            services={[Page, Search, Selection, Toolbar, Edit, Sort, Filter]}
+          />
+        </GridComponent>
+      </div>
+      {/* Main modal */}
+      {isModalVisible && (
         <div className="modal-container">
           <div className="modal-content">
             <div className="modal-header">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Add Employee
               </h3>
               <button
                 onClick={closeModal}
-                className="modal-close-button"
+                className="modal-close-button btn-close"
                 data-modal-hide="defaultModal"
               >
                 <svg
@@ -198,15 +209,15 @@ const Employees = () => {
                 </svg>
                 <span className="sr-only">Close modal</span>
               </button>
-              </div>
-              <div className="modal-body">
-              <form className="space-y-6" onSubmit={(e)=>handleSubmit(e)}>
+            </div>
+            <div className="modal-body">
+              <form className="space-y-6" onSubmit={(e) => handleSubmit(e)}>
                 <div>
-                <label
+                  <label
                     htmlFor="name"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                     Name
+                    Name
                   </label>
                   <input
                     type="text"
@@ -214,7 +225,7 @@ const Employees = () => {
                     id="name"
                     value={formValues.name}
                     onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 "
                     placeholder="Name"
                     required
                   />
@@ -222,7 +233,7 @@ const Employees = () => {
                 <div>
                   <label
                     htmlFor="projects"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Projects
                   </label>
@@ -232,15 +243,15 @@ const Employees = () => {
                     id="projects"
                     value={formValues.projects}
                     onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
                     placeholder="Projects"
                     required
                   />
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="status"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Status
                   </label>
@@ -250,17 +261,17 @@ const Employees = () => {
                     id="status"
                     value={formValues.status}
                     onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
                     placeholder="Status"
                     required
                   />
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="weeks"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                     Weeks
+                    Weeks
                   </label>
                   <input
                     type="text"
@@ -268,17 +279,17 @@ const Employees = () => {
                     id="weeks"
                     value={formValues.weeks}
                     onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
                     placeholder="Weeks"
                     required
                   />
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                     Email
+                    Email
                   </label>
                   <input
                     type="text"
@@ -286,23 +297,23 @@ const Employees = () => {
                     id="email"
                     value={formValues.email}
                     onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
                     placeholder="Email"
                     required
                   />
                 </div>
                 <div className="modal-footer">
-            <button
+                  <button
                     data-modal-hide="defaultModal"
                     type="submit"
                     className="text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
                   >
-          Submit
-        </button>
-            </div>
+                    Submit
+                  </button>
+                </div>
               </form>
             </div>
-            
+
           </div>
         </div>
       )}

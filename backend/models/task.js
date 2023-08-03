@@ -1,11 +1,12 @@
 const mongoose = require('mongoose')
-const Task = mongoose.model('task',{
+
+const Task = mongoose.model('task', {
     Title: {
         type: String,
     },
-    ProjectId: { 
+    ProjectId: {
         type: String,
-        required:true,
+        required: true,
     },
     Status: {
         type: String,
@@ -32,7 +33,7 @@ const Task = mongoose.model('task',{
         type: String,
     },
 
-    
-   
+
+
 })
-module.exports= Task;
+module.exports = Task;

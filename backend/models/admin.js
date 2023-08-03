@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const Admin = mongoose.model('admin',{
+
+const Admin = mongoose.model('admin', {
     name: {
         type: String
     },
@@ -15,6 +16,6 @@ const Admin = mongoose.model('admin',{
     country: {
         type: String
     },
-    
+
 })
-module.exports= Admin;
+module.exports = Admin;

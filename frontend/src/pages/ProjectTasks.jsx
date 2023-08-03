@@ -234,7 +234,7 @@ const Kanban = () => {
               </h3>
               <button
                 onClick={closeModal}
-                className="modal-close-button"
+                className="modal-close-button btn-close"
                 data-modal-hide="defaultModal"
               >
                 <svg
@@ -426,7 +426,7 @@ const Kanban = () => {
               </h3>
               <button
                 onClick={closeMessage}
-                className="modal-close-button"
+                className="modal-close-button btn-close"
                 data-modal-hide="defaultModal"
               >
                 <svg
@@ -464,7 +464,7 @@ const Kanban = () => {
         </h3>
         <button
           onClick={toggleEditModal} // Step 5: Add onClick event to close the modal
-          className="modal-close-button"
+          className="modal-close-button btn-close"
           data-modal-hide="defaultModal"
         >
           <svg

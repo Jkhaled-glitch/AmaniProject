@@ -1,7 +1,6 @@
-
-
 const mongoose = require('mongoose')
-const Project = mongoose.model('project',{
+
+const Project = mongoose.model('project', {
     projecttitle: {
         type: String
     },
@@ -15,8 +14,12 @@ const Project = mongoose.model('project',{
         type: Array
     },
     employeeEmail: {
-        type:String
-    }
-    
+        type: String
+    },
+    domain: {
+        type: String
+    },
+
+
 })
-module.exports= Project;
+module.exports = Project;

@@ -6,8 +6,14 @@ import './projects.css';
 //import AddProjectCard from './AddProjectCard';
 import { useNavigate } from 'react-router-dom';
 import { RiGitBranchFill } from 'react-icons/ri';
+import jwtDecode from 'jwt-decode'
 
 const Projects = () => {
+
+  //import jwtDecode from 'jwt-decode'
+  const token = localStorage.getItem('user');
+  const decodedToken = jwtDecode(token);
+  const { _id, email, accountType } = decodedToken;
 
   const navigate = useNavigate()
 
@@ -74,7 +80,7 @@ const Projects = () => {
 
 
   useEffect(() => {
-    let isMounted = true; // Add a variable to track if the component is mounted
+    let isMounted = true;
 
     fetchProjects()
       .then((response) => {
@@ -86,15 +92,16 @@ const Projects = () => {
         console.error(error);
       });
       return () => {
-        isMounted = false; // This will cancel any ongoing asynchronous tasks
+        isMounted = false;
       };
     }, []);
 
   const [projects, setProjects] = useState([]);
 
   const fetchProjects = async () => {
+    const url = accountType=='admin' ? `http://localhost:5000/projects`: `http://localhost:5000/projects/getbyuseremail/${email}`
     try {
-      const response = await axios.get(`http://localhost:5000/projects/projects`);
+      const response = await axios.get(url);
       setProjects(response.data);
     } catch (error) {
       console.error(error);
@@ -167,13 +174,14 @@ const Projects = () => {
         <div className="modal-container">
           <div className="modal-content">
             <div className="modal-header">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-gray-900 ">
               Add Project
               </h3>
               <button
                 onClick={closeModal}
-                className="modal-close-button"
+                className="modal-close-button btn-close"
                 data-modal-hide="defaultModal"
+                
               >
                 <svg
                   className="w-3 h-3"

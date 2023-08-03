@@ -8,6 +8,7 @@ const UpdateProjectCard = ({ onUpdateProject, selectedProject }) => {
     tasks: '',
   });
 
+
   useEffect(() => {
     // Update the local state with the selected project data
     if (selectedProject) {
@@ -64,7 +65,7 @@ const UpdateProjectCard = ({ onUpdateProject, selectedProject }) => {
         />
       </div>
       <button onClick={handleSubmit}>Update Project</button>
-      
+
     </div>
   );
 };

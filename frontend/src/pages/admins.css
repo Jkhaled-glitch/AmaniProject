@@ -88,3 +88,11 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.btn-close{
+  background-color: rgb(0,0,0,.5) !important;
+  
+}
+.btn-close:hover{
+background-color: rgb(0,0,0)!important;
+}

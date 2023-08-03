@@ -16,8 +16,15 @@ import {
 import { employeesData, employeesGrid } from '../data/dummy';
 import { Header } from '../components';
 import './admins.css';
+import jwtDecode from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const Admins = () => {
+  //import jwtDecode from 'jwt-decode';
+  const token = localStorage.getItem('user');
+  const decodedToken = jwtDecode(token);
+  const { _id, email, accountType } = decodedToken;
+
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -43,65 +50,70 @@ const Admins = () => {
       console.error(error);
     }
   };
-  
-    const handleSubmit = async (event) => {
-      console.log("submit")
-      event.preventDefault();
-      try {
-        await handleAddAdmin(formValues);
-        closeModal();
-        // Optionally, you can fetch the updated admins data here
-        fetchAdmins();
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
-    const closeModal = () => {
-      setModalVisible(false);
-    };
+  const handleSubmit = async (event) => {
+    console.log("submit")
+    event.preventDefault();
+    try {
+      await handleAddAdmin(formValues);
+      closeModal();
+      // Optionally, you can fetch the updated admins data here
+      fetchAdmins();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  const navigate = useNavigate()
   // Utilize the hook useEffect to execute fetchEmployees once the component is mounted
   useEffect(() => {
+    if (accountType != 'admin')
+      navigate('/')
+
     fetchAdmins()
+
+
   }, []);
 
-    const [admins, setAdmins] = useState([]);
-    // Fonction pour effectuer une requête GET vers le backend et récupérer les projets
-     const fetchAdmins = async () => {
-       try {
-         const response = await axios.get('http://localhost:5000/admins');
-         setAdmins(response.data); // Met à jour l'état des projets avec les données reçues depuis le backend
-       } catch (error) {
-         console.error(error);
-       }
-     };
-   // Function to handle the delete operation
-   const handleDelete = async (args) => {
+  const [admins, setAdmins] = useState([]);
+  // Fonction pour effectuer une requête GET vers le backend et récupérer les projets
+  const fetchAdmins = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/admins');
+      setAdmins(response.data); // Met à jour l'état des projets avec les données reçues depuis le backend
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // Function to handle the delete operation
+  const handleDelete = async (args) => {
     const data = args.data; // Get the data object from the event arguments
     try {
       for (let admin of data) {
         const adminId = admin._id;
-            await axios.delete(`http://localhost:5000/admins/${adminId}`)
+        await axios.delete(`http://localhost:5000/admins/${adminId}`)
       }
       fetchAdmins();
     } catch (error) {
       console.error(error);
     }
-  };  
-  
-    // Function to handle the update operation
-    const handleUpdate = async (args) => {
-      const data = args.data; // Get the data object from the event arguments
-      console.log(data);
-      try {
-        const adminId = data._id;
-        await axios.put(`http://localhost:5000/admins/${adminId}`, data);
-        fetchAdmins(); // Fetch the updated data after successful update
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  };
+
+  // Function to handle the update operation
+  const handleUpdate = async (args) => {
+    const data = args.data; // Get the data object from the event arguments
+    console.log(data);
+    try {
+      const adminId = data._id;
+      await axios.put(`http://localhost:5000/admins/${adminId}`, data);
+      fetchAdmins(); // Fetch the updated data after successful update
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 
   const [searchValue, setSearchValue] = useState('');
@@ -140,23 +152,23 @@ const Admins = () => {
 
       {/* GridComponent */}
       <div className="table-container">
-      <GridComponent
-        dataSource={filterData()}
-        allowPaging
-        allowSorting
-        toolbar={['Search', 'Delete', 'Update']} // Add 'Search' option to the toolbar
-        width="auto"
-        editSettings={{ allowDeleting: true, allowEditing: true }}
-        actionBegin={handleSearch} // Attach the handleSearch function to the actionBegin event
-        actionComplete={(args) => {
-          // Check if the action is 'edit' and then call handleUpdate
-          if (args.requestType === 'save') {
-            handleUpdate(args);
-          } else if (args.requestType === 'delete') {
-            handleDelete(args);
-          }
-        }}
-      >
+        <GridComponent
+          dataSource={filterData()}
+          allowPaging
+          allowSorting
+          toolbar={['Search', 'Delete', 'Update']} // Add 'Search' option to the toolbar
+          width="auto"
+          editSettings={{ allowDeleting: true, allowEditing: true }}
+          actionBegin={handleSearch} // Attach the handleSearch function to the actionBegin event
+          actionComplete={(args) => {
+            // Check if the action is 'edit' and then call handleUpdate
+            if (args.requestType === 'save') {
+              handleUpdate(args);
+            } else if (args.requestType === 'delete') {
+              handleDelete(args);
+            }
+          }}
+        >
           <ColumnsDirective>
             <ColumnDirective type="checkbox" width="50" />
             {employeesGrid.map((item, index) => (
@@ -167,17 +179,17 @@ const Admins = () => {
         </GridComponent>
       </div>
 
-{/* Main modal */}
-{isModalVisible && (
+      {/* Main modal */}
+      {isModalVisible && (
         <div className="modal-container">
           <div className="modal-content">
             <div className="modal-header">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-gray-900 ">
                 Add Admin
               </h3>
               <button
                 onClick={closeModal}
-                className="modal-close-button"
+                className="modal-close-button btn-close"
                 data-modal-hide="defaultModal"
               >
                 <svg
@@ -197,15 +209,15 @@ const Admins = () => {
                 </svg>
                 <span className="sr-only">Close modal</span>
               </button>
-              </div>
-              <div className="modal-body">
-              <form className="space-y-6" onSubmit={(e)=>handleSubmit(e)}>
+            </div>
+            <div className="modal-body">
+              <form className="space-y-6" onSubmit={(e) => handleSubmit(e)}>
                 <div>
-                <label
+                  <label
                     htmlFor="name"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                     Name
+                    Name
                   </label>
                   <input
                     type="text"
@@ -219,9 +231,9 @@ const Admins = () => {
                   />
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="designation"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Designation
                   </label>
@@ -239,7 +251,7 @@ const Admins = () => {
                 <div>
                   <label
                     htmlFor="projects"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Projects
                   </label>
@@ -255,11 +267,11 @@ const Admins = () => {
                   />
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                     Email
+                    Email
                   </label>
                   <input
                     type="text"
@@ -267,17 +279,17 @@ const Admins = () => {
                     id="email"
                     value={formValues.email}
                     onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
                     placeholder="Email"
                     required
                   />
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="country"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                     Country
+                    Country
                   </label>
                   <input
                     type="text"
@@ -285,24 +297,24 @@ const Admins = () => {
                     id="country"
                     value={formValues.country}
                     onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 "
                     placeholder="Country"
                     required
                   />
                 </div>
-                
+
                 <div className="modal-footer">
-            <button
+                  <button
                     data-modal-hide="defaultModal"
                     type="submit"
                     className="text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
                   >
-          Submit
-        </button>
-            </div>
+                    Submit
+                  </button>
+                </div>
               </form>
             </div>
-            
+
           </div>
         </div>
       )}

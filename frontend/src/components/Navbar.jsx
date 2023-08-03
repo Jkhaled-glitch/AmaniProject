@@ -35,19 +35,12 @@ const Navbar = () => {
       return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    useEffect(() => {
-      if (screenSize <= 900) {
-        setActiveMenu(false);
-      } else {
-        setActiveMenu(true);
-      }
-    }, [screenSize]);
-
+    
     const handleActiveMenu = () => setActiveMenu(!activeMenu);
 
   return (
     <div className="flex justify-between p-2 md:ml-6 md:mr-6 relative">
-      <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
+    {activeMenu ? <span></span> : <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} /> }
     <div className="flex">
     <NavButton title="Chat" dotColor="#03C9D7" customFunc={() => handleClick('chat')} color={currentColor} icon={<BsChatLeft />} />
     <NavButton title="Notification" dotColor="rgb(254, 201, 15)" customFunc={() => handleClick('notification')} color={currentColor} icon={<RiNotification3Line />} />

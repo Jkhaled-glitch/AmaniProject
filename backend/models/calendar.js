@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const Calendar = mongoose.model('calendar',{
+
+const Calendar = mongoose.model('calendar', {
     subject: {
         type: String
     },
@@ -12,6 +13,6 @@ const Calendar = mongoose.model('calendar',{
     endTime: {
         type: Date,
     },
-    
+
 })
-module.exports= Calendar;
+module.exports = Calendar;
