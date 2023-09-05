@@ -1,0 +1,9 @@
+/* Ajoutez cette règle pour masquer le texte du label lorsqu'une valeur est entrée */
+input[type="email"]:not(:placeholder-shown) + label {
+    transform: translateY(-2rem) scale(0.8);
+  }
+/* Ajoutez cette règle pour masquer le texte du label lorsqu'une valeur est entrée pour le champ de mot de passe */
+input[type="password"]:not(:placeholder-shown) + label {
+    transform: translateY(-2rem) scale(0.8);
+  }
+    

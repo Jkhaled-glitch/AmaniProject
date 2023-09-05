@@ -33,16 +33,58 @@ const Employees = () => {
   };
   const [formValues, setFormValues] = useState({
     name: '',
-    projects: '',
-    status: '',
+    projects: [],
     weeks: '',
     location: '',
     email: '',
   });
 
+
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
+    const { name, value, type } = event.target;
+  
+    // Si c'est un champ multiselect, traitez les valeurs en tant que tableau
+    if (type === 'select-multiple') {
+     const selectedOptions = Array.from(event.target.selectedOptions, (option) => option.value);
+  
+  setFormValues((prevValues) => {
+    let updatedProjects = prevValues.projects ? [...prevValues.projects] : [];
+  
+    selectedOptions.forEach(option => {
+      const index = updatedProjects.indexOf(option);
+      if (index > -1) {
+        // Si l'option est déjà dans le tableau, retirez-la.
+        updatedProjects.splice(index, 1);
+      } else {
+        // Sinon, ajoutez-la.
+        updatedProjects.push(option);
+      }
+    });
+  
+    return { ...prevValues, [name]: updatedProjects };
+  });
+    } else {
+      setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
+    }
+  };
+
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    if (accountType !== 'admin') navigate('/');
+
+    // Fetch projects from backend
+    fetchProjects();
+  }, []);
+
+  // Function to fetch projects from backend
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/projects');
+      setProjects(response.data); // Update the state with fetched projects
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleAddEmployee = async (employeeData) => {
@@ -116,7 +158,9 @@ const Employees = () => {
     try {
       for (let employee of data) {
         const employeeId = employee._id;
+        //start loader
         await axios.delete(`http://localhost:5000/employees/${employeeId}`)
+        // close loader
       }
       fetchEmployees();
     } catch (error) {
@@ -170,9 +214,21 @@ const Employees = () => {
           actionComplete={handleDelete} // Call handleDelete when a delete operation is completed
         >
           <ColumnsDirective>
-            {customersGrid.map((item, index) => (
-              <ColumnDirective key={index} {...item} />
-            ))}
+          {customersGrid.map((item, index) => {
+    if (item.field === "projects") {
+      return (
+        <ColumnDirective
+          key={index}
+          {...item}
+          isPrimaryKey={true} // Empêche l'édition de la colonne "projects"
+        />
+      );
+    }
+    return (
+      <ColumnDirective key={index} {...item} />
+    );
+  })}
+
           </ColumnsDirective>
           <Inject
             services={[Page, Search, Selection, Toolbar, Edit, Sort, Filter]}
@@ -231,41 +287,27 @@ const Employees = () => {
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="projects"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Projects
-                  </label>
-                  <input
-                    type="text"
-                    name="projects"
-                    id="projects"
-                    value={formValues.projects}
-                    onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
-                    placeholder="Projects"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="status"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Status
-                  </label>
-                  <input
-                    type="text"
-                    name="status"
-                    id="status"
-                    value={formValues.status}
-                    onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
-                    placeholder="Status"
-                    required
-                  />
-                </div>
+        <label htmlFor="projects" className="block mb-2 text-sm font-medium text-gray-900">
+          Projects
+        </label>
+        <select
+          name="projects"
+          id="projects"
+          value={formValues.projects}
+          onChange={handleInputChange}
+          multiple
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+          required
+        >
+          {/* Populate select options with projects */}
+          {projects.map((project) => (
+            <option key={project._id} value={project.projecttitle}>
+              {project.projecttitle}
+            </option>
+          ))}
+          
+        </select>
+      </div>
                 <div>
                   <label
                     htmlFor="weeks"

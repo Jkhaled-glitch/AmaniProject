@@ -12,6 +12,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    geted = await Project.findOne({ _id: id });
+    res.send(geted);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
 router.get('/:domain', async (req, res) => {
   const domain= req.params.domain;
   try {
@@ -40,25 +50,7 @@ router.post('/addproject', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
-  const id = req.params.id;
-  try {
-    geted = await Project.findOne({ _id: id });
-    res.send(geted);
-  } catch (err) {
-    res.send(err);
-  }
-});
 
-router.get('/:id/tasks', async (req, res) => {
-  const projectidd = req.params.id;
-  try {
-    const project = await Project.findOne({ _id: projectidd });
-    res.send(project.tasks);
-  } catch (err) {
-    res.send(err);
-  }
-});
 
 router.get('/getbyuseremail/:email', async (req, res) => {
   const email = req.params.email;

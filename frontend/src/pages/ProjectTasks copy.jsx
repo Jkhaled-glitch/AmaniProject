@@ -5,15 +5,7 @@ import {  kanbanData,kanbanGrid } from '../data/dummy';
 import { Button, Header } from '../components';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import {
-  HtmlEditor,
-  Image,
-  Inject,
-  Link,
-  QuickToolbar,
-  RichTextEditorComponent,
-  Toolbar
-} from '@syncfusion/ej2-react-richtexteditor';
+
 
 
 
@@ -40,8 +32,6 @@ const Kanban = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [message,setMessage] = useState('')
-
-
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -103,9 +93,7 @@ const Kanban = () => {
 
 
 
-
   const [isEditModalVisible, setEditModalVisible] = useState(false);
-  const [editedDescription, setEditedDescription] = useState('');
 
   // Step 2: Create a function to toggle the visibility of the Edit Task popup
   const toggleEditModal = () => {
@@ -119,36 +107,29 @@ const Kanban = () => {
       ...task,
       Priority: task.Priority // Set the priority value of the task being edited
     });
-
-    // Set the Rich Text Editor content
-    setEditedDescription(task.Description);
-
     toggleEditModal();
   };
 
-
-
   const handleSubmitEdit = async (event) => {
     event.preventDefault();
-
-    toggleEditModal();
-    await axios.put(`http://localhost:5000/tasks/${taskEditedId}`, {
-      ...formValues,
-      Description: editedDescription // Use the editedDescription value
-    })
-    .then(() => {
-      setMessage("Task has been successfully edited");
-      setIsMessageVisible(true);
-      setTimeout(() => closeMessage(), 3000);
-
-      fetchTasks();
-    })
-    .catch(error => {
-      setMessage(error);
-      setIsMessageVisible(true);
-      setTimeout(() => closeMessage(), 3000);
-      console.error(error);
-    });
+   
+      toggleEditModal();
+      await axios.put(`http://localhost:5000/tasks/${taskEditedId}`, formValues)
+      .then(()=>{
+        setMessage("Task has successfully edited")
+        setIsMessageVisible(true)
+        setTimeout(()=>closeMessage(),3000)
+        
+        fetchTasks();
+      })
+      .catch(error=>{
+        setMessage(error)
+        setIsMessageVisible(true)
+        setTimeout(()=>closeMessage(),3000)
+        console.error(error);
+      })
+      
+    
   };
 
   
@@ -166,13 +147,7 @@ const Kanban = () => {
       console.error(error);
     }
   };
-
-  const handleDescriptionChange = (value) => {
-    setFormValues((prevValues) => ({ ...prevValues, Description: value }));
-  };
  
-
-
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
@@ -223,6 +198,19 @@ const Kanban = () => {
               </div>
             ),
           }}
+         /* dialogSettings={{
+            fields: [
+              { key: '_id', type: 'TextBox' },
+              { key: 'Title', type: 'TextBox' },
+              { key: 'Priority', type: 'DropDown', dataSource: priorityData },
+              { key: 'Status', type: 'DropDown' },
+              { key: 'Summary', type: 'TextArea' },
+              { key: 'CreationDate', type: 'TextBox' },
+              { key: 'ExpirationDate', type: 'TextBox', format: 'yyyy-MM-dd' },
+              { key: 'CreatedBy', type: 'TextBox' },
+              
+            ],
+          }}*/
         >
           <ColumnsDirective>
             {kanbanGrid.map((item, index) => (
@@ -233,7 +221,7 @@ const Kanban = () => {
 {/* Main modal */}
 {isModalVisible && (
         <div className="modal-container">
-          <div className="modal-content" style={{ maxHeight: '90%', overflow: 'auto' }}>
+          <div className="modal-content">
             <div className="modal-header">
               <h3 className="text-xl font-semibold text-gray-900 ">
                 Add Task
@@ -394,19 +382,23 @@ const Kanban = () => {
                   />
                 </div>
                 <div>
-        <label htmlFor="Description" className="block mb-2 text-sm font-medium text-gray-900 ">
-          Description
-        </label>
-        <RichTextEditorComponent
-          id="Description"
-          value={formValues.Description}
-          onChange={handleDescriptionChange} // Define the handler function
-          style={{ height: '50px', maxWidth: '100%', overflow: 'auto' }}
-
-        >
-          <Inject services={[HtmlEditor, Toolbar, Image, Link, QuickToolbar]} />
-        </RichTextEditorComponent>
-      </div>
+                <label
+                    htmlFor="Description"
+                    className="block mb-2 text-sm font-medium text-gray-900 "
+                  >
+                     Description
+                  </label>
+                  <input
+                    type="text"
+                    name="Description"
+                    id="Description"
+                    value={formValues.Description}
+                    onChange={handleInputChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 "
+                    placeholder="Description"
+                    required
+                  />
+                </div>
                 <div>
                 <label
                     htmlFor="Color"
@@ -443,7 +435,7 @@ const Kanban = () => {
 
 {isMessageVisible && (
         <div className="modal-container">
-          <div className="modal-content" style={{ maxWidth: '90%', maxHeight: '90%' }}>
+          <div className="modal-content">
             <div className="modal-header">
               <h3 className="text-xl font-semibold text-gray-900 ">
                 Indicators
@@ -481,7 +473,7 @@ const Kanban = () => {
 
 {isEditModalVisible && (
   <div className="modal-container">
-    <div className="modal-content" style={{ maxHeight: '90%', overflow: 'auto' }}>
+    <div className="modal-content">
       <div className="modal-header">
         <h3 className="text-xl font-semibold text-gray-900 ">
           Edit Task
@@ -634,27 +626,13 @@ const Kanban = () => {
                 onChange={handleInputChange}
               />
             </div>
-            <div>
-            <label htmlFor="Description" className="block mb-2 text-sm font-medium text-gray-900 ">
-              Description
-            </label>
-            <RichTextEditorComponent
-              id="Description"
-              value={editedDescription}
-              onChange={handleDescriptionChange}
-              style={{ height: '20px', maxWidth: '100%', overflow: 'auto' }}
-
-            >
-              <Inject services={[HtmlEditor, Toolbar, Image, Link, QuickToolbar]} />
-            </RichTextEditorComponent>
-          </div>
-          {/*  <a
+            <a
               href="http://localhost:3000/editor"
               className="mr-0 ml-0 mt-1 mb-1 bg-white hover:cursor-pointer text-black font-bold py- px-1"
               style={{ textDecoration: 'none' }}
             >
             <span className="hover:underline">Join File</span>
-</a>*/}
+            </a>
 
             <div className="modal-footer">
               <button

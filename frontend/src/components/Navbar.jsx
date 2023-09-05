@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import jwtDecode from 'jwt-decode';
+
 import { AiOutlineMenu } from 'react-icons/ai';
 import { FiShoppingCart } from 'react-icons/fi';
 import { BsChatLeft } from 'react-icons/bs';
@@ -37,6 +40,23 @@ const Navbar = () => {
 
     
     const handleActiveMenu = () => setActiveMenu(!activeMenu);
+       //import jwtDecode from 'jwt-decode'
+   const token = localStorage.getItem('user');
+   const decodedToken = jwtDecode(token);
+   const { _id, email, accountType } = decodedToken;
+   
+   const[userData,setUserData] = useState({userName:"",email:email});
+   useEffect(async () => {
+    try{
+      const res = await axios.get(`http://localhost:5000/users/${_id}`)
+      console.log(res)
+      setUserData(res.data)
+  
+    }catch(err){
+      console.error(err)
+    }
+   
+  }, []);
 
   return (
     <div className="flex justify-between p-2 md:ml-6 md:mr-6 relative">
@@ -55,7 +75,7 @@ const Navbar = () => {
         <p>
               <span className="text-gray-400 text-14">Hi,</span>{' '}
               <span className="text-gray-400 font-bold ml-1 text-14">
-                Michael
+              {userData.userName}
               </span>
         </p>  
         <MdKeyboardArrowDown className="text-gray-400 text-14" />

@@ -11,6 +11,9 @@ const Task = mongoose.model('task', {
     Status: {
         type: String,
     },
+    DateOfDone: {
+        type: Date,
+    },
     Priority: {
         type: String,
     },

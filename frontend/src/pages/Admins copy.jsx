@@ -11,7 +11,6 @@ import {
   Inject,
   Toolbar,
   Edit,
-  valueAccessor,
 } from '@syncfusion/ej2-react-grids';
 
 import { employeesData, employeesGrid } from '../data/dummy';
@@ -34,40 +33,15 @@ const Admins = () => {
   const [formValues, setFormValues] = useState({
     name: '',
     designation: '',
-    projects: [],
+    projects: '',
     email: '',
     country: '',
   });
 
   const handleInputChange = (event) => {
-    const { name, value, type } = event.target;
-  
-    // Si c'est un champ multiselect, traitez les valeurs en tant que tableau
-    if (type === 'select-multiple') {
-     const selectedOptions = Array.from(event.target.selectedOptions, (option) => option.value);
-  
-  setFormValues((prevValues) => {
-    let updatedProjects = prevValues.projects ? [...prevValues.projects] : [];
-  
-    selectedOptions.forEach(option => {
-      const index = updatedProjects.indexOf(option);
-      if (index > -1) {
-        // Si l'option est déjà dans le tableau, retirez-la.
-        updatedProjects.splice(index, 1);
-      } else {
-        // Sinon, ajoutez-la.
-        updatedProjects.push(option);
-      }
-    });
-  
-    return { ...prevValues, [name]: updatedProjects };
-  });
-    } else {
-      setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
-    }
+    const { name, value } = event.target;
+    setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
   };
-  
-
   const handleAddAdmin = async (adminData) => {
     try {
       const response = await axios.post('http://localhost:5000/admins/addadmin', adminData);
@@ -76,41 +50,24 @@ const Admins = () => {
       console.error(error);
     }
   };
-  
+
   const handleSubmit = async (event) => {
+    console.log("submit")
     event.preventDefault();
     try {
       await handleAddAdmin(formValues);
       closeModal();
+      // Optionally, you can fetch the updated admins data here
       fetchAdmins();
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   const closeModal = () => {
     setModalVisible(false);
   };
   const navigate = useNavigate()
-  const [projects, setProjects] = useState([]);
-
-  useEffect(() => {
-    if (accountType !== 'admin') navigate('/');
-
-    // Fetch projects from backend
-    fetchProjects();
-  }, []);
-
-  // Function to fetch projects from backend
-  const fetchProjects = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/projects');
-      setProjects(response.data); // Update the state with fetched projects
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  console.log(projects)
   // Utilize the hook useEffect to execute fetchEmployees once the component is mounted
   useEffect(() => {
     if (accountType != 'admin')
@@ -178,8 +135,6 @@ const Admins = () => {
     }
   };
 
-
-  
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header category="Page" title="Admins" />
@@ -214,24 +169,12 @@ const Admins = () => {
             }
           }}
         >
-<ColumnsDirective>
-  <ColumnDirective type="checkbox" width="50" />
-  {employeesGrid.map((item, index) => {
-    if (item.field === "projects") {
-      return (
-        <ColumnDirective
-          key={index}
-          {...item}
-          isPrimaryKey={true} // Empêche l'édition de la colonne "projects"
-        />
-      );
-    }
-    return (
-      <ColumnDirective key={index} {...item} />
-    );
-  })}
-</ColumnsDirective>
-
+          <ColumnsDirective>
+            <ColumnDirective type="checkbox" width="50" />
+            {employeesGrid.map((item, index) => (
+              <ColumnDirective key={index} {...item} />
+            ))}
+          </ColumnsDirective>
           <Inject services={[Page, Search, Selection, Toolbar, Edit]} />
         </GridComponent>
       </div>
@@ -306,28 +249,23 @@ const Admins = () => {
                   />
                 </div>
                 <div>
-        <label htmlFor="projects" className="block mb-2 text-sm font-medium text-gray-900">
-          Projects
-        </label>
-        <select
-          name="projects"
-          id="projects"
-          value={formValues.projects}
-          onChange={handleInputChange}
-          multiple
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-          required
-        >
-          {/* Populate select options with projects */}
-          {projects.map((project) => (
-            <option key={project._id} value={project.projecttitle}>
-              {project.projecttitle}
-            </option>
-          ))}
-          
-        </select>
-      </div> 
-
+                  <label
+                    htmlFor="projects"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Projects
+                  </label>
+                  <input
+                    type="text"
+                    name="projects"
+                    id="projects"
+                    value={formValues.projects}
+                    onChange={handleInputChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    placeholder="Projects"
+                    required
+                  />
+                </div>
                 <div>
                   <label
                     htmlFor="email"

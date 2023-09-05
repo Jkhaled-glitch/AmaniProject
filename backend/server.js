@@ -35,3 +35,4 @@ app.use('/uploads', express.static('./uploads'))
 app.listen(port, async (req, res) => {
     console.log(`server start on port ${port} `)
 })
+

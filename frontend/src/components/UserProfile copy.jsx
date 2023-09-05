@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useContext } from 'react';
 import { MdOutlineCancel } from 'react-icons/md';
 
@@ -7,30 +7,10 @@ import LogOut from './LogOut';
 import { userProfileData } from '../data/dummy';
 import { useStateContext } from '../contexts/ThemeContext';
 import avatar from '../data/avatar.jpg';
-import jwtDecode from 'jwt-decode';
-import axios from 'axios';
-
-
 
 const UserProfile = () => {
   const { currentColor } = useStateContext();
-   //import jwtDecode from 'jwt-decode'
-   const token = localStorage.getItem('user');
-   const decodedToken = jwtDecode(token);
-   const { _id, email, accountType } = decodedToken;
-   
-   const[userData,setUserData] = useState({userName:"",email:email});
-   useEffect(async () => {
-    try{
-      const res = await axios.get(`http://localhost:5000/users/${_id}`)
-      console.log(res)
-      setUserData(res.data)
   
-    }catch(err){
-      console.error(err)
-    }
-   
-  }, []);
 
   
 
@@ -53,9 +33,9 @@ const UserProfile = () => {
           alt="user-profile"
         />
         <div>
-          <p className="font-semibold text-xl dark:text-gray-200"> {userData.userName} </p>
-          <p className="text-gray-500 text-sm dark:text-gray-400"> {accountType=="admin"?'Administrator':'Employee'} </p>
-          <p className="text-gray-500 text-sm font-semibold dark:text-gray-400"> {userData.email} </p>
+          <p className="font-semibold text-xl dark:text-gray-200"> Michael Roberts </p>
+          <p className="text-gray-500 text-sm dark:text-gray-400">  Administrator   </p>
+          <p className="text-gray-500 text-sm font-semibold dark:text-gray-400"> info@shop.com </p>
         </div>
       </div>
       <div>

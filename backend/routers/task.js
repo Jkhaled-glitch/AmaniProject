@@ -32,6 +32,35 @@ router.get('/getbyproject/:id', async (req, res) => {
   }
 });
 
+router.get('/getbyproject/:id/rate/:date', async (req, res) => {
+  let allTasks = 0;
+  let numTasksDone = 0;
+  const id = req.params.id;
+  const expirationDate = new Date(req.params.date);
+
+  try {
+    // Récupérer toutes les tâches pour le projet donné
+    const tasks = await Task.find({ ProjectId: id });
+    allTasks = tasks.length;
+
+    // Récupérer les tâches qui ont une date d'expiration inférieure à la date spécifiée
+    const tasksDone = await Task.find({ 
+      ProjectId: id,
+      Status: 'Done',
+      ExpirationDate: { $lt: expirationDate } 
+    });
+    numTasksDone = tasksDone.length;
+
+    res.send({
+      rate: allTasks === 0 ? 0 : ((numTasksDone / allTasks)*100) // Ajout d'une vérification pour éviter une division par zéro
+    });
+
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+
 
 router.post('/add/:id', async (req, res) => {
   const Title = req.body.Title;

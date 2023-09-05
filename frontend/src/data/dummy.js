@@ -45,11 +45,11 @@ export const gridOrderStatus = (props) => (
 export const kanbanGrid = [
 
   { headerText: 'To Do',
-    keyField: 'Open',
+    keyField: 'To Do',
     allowToggle: true },
 
   { headerText: 'In Progress',
-    keyField: 'InProgress',
+    keyField: 'In Progress',
     allowToggle: true },
 
   { headerText: 'Testing',
@@ -58,7 +58,7 @@ export const kanbanGrid = [
     isExpanded: false },
 
   { headerText: 'Done',
-    keyField: 'Close',
+    keyField: 'Done',
     allowToggle: true },
 
 ];
@@ -255,6 +255,7 @@ export const barCustomSeries = [
 export const LinePrimaryXAxis = {
   valueType: 'DateTime',
   labelFormat: 'MMM',
+  interval: 1,
   intervalType: 'Months',
   edgeLabelPlacement: 'Shift',
   majorGridLines: { width: 0 },
@@ -286,13 +287,6 @@ export const customersGrid = [
     headerText: 'Projects',
     width: '150',
     textAlign: 'Center' },
-  { field: 'status',
-    headerText: 'Status',
-    width: '130',
-    format: 'yMd',
-    textAlign: 'Center',
-    //template: customerGridStatus },
-},
   {
     field: 'weeks',
     headerText: 'Weeks',
@@ -2762,23 +2756,23 @@ export const lineChartData = [
     { x: new Date(2011, 0, 1), y: 70 },
   ],
   [
-    { x: new Date(2005, 0, 1), y: 28 },
-    { x: new Date(2006, 0, 1), y: 44 },
-    { x: new Date(2007, 0, 1), y: 48 },
-    { x: new Date(2008, 0, 1), y: 50 },
-    { x: new Date(2009, 0, 1), y: 66 },
-    { x: new Date(2010, 0, 1), y: 78 },
-    { x: new Date(2011, 0, 1), y: 84 },
+      { x: new Date(2005, 0, 1), y: 21 },
+      { x: new Date(2005, 1, 1), y: 24 },
+      { x: new Date(2005, 2, 1), y: 36 },
+      { x: new Date(2005, 3, 1), y: 38 },
+      { x: new Date(2005, 4, 1), y: 54 },
+      { x: new Date(2005, 5, 1), y: 57 },
+      { x: new Date(2005, 6, 1), y: 70 },
   ],
 
   [
-    { x: new Date(2005, 0, 1), y: 10 },
-    { x: new Date(2006, 0, 1), y: 20 },
-    { x: new Date(2007, 0, 1), y: 30 },
-    { x: new Date(2008, 0, 1), y: 39 },
-    { x: new Date(2009, 0, 1), y: 50 },
-    { x: new Date(2010, 0, 1), y: 70 },
-    { x: new Date(2011, 0, 1), y: 100 },
+    { x: new Date(2005, 0, 1), y: 21 },
+      { x: new Date(2005, 1, 1), y: 24 },
+      { x: new Date(2005, 2, 1), y: 36 },
+      { x: new Date(2005, 3, 1), y: 38 },
+      { x: new Date(2005, 4, 1), y: 54 },
+      { x: new Date(2005, 5, 1), y: 57 },
+      { x: new Date(2005, 6, 1), y: 70 },
   ],
 ];
 export const dropdownData = [
@@ -2807,12 +2801,12 @@ export const lineCustomSeries = [
   { 
     dataSource: [
         { x: new Date(2005, 0, 1), y: 21 },
-        { x: new Date(2006, 0, 1), y: 24 },
-        { x: new Date(2007, 0, 1), y: 36 },
-        { x: new Date(2008, 0, 1), y: 38 },
-        { x: new Date(2009, 0, 1), y: 54 },
-        { x: new Date(2010, 0, 1), y: 57 },
-        { x: new Date(2011, 0, 1), y: 70 },
+        { x: new Date(2005, 1, 1), y: 24 },
+        { x: new Date(2005, 2, 1), y: 36 },
+        { x: new Date(2005, 3, 1), y: 38 },
+        { x: new Date(2005, 4, 1), y: 54 },
+        { x: new Date(2005, 5, 1), y: 57 },
+        { x: new Date(2005, 6, 1), y: 70 },
       ],
     xName: 'x',
     yName: 'y',
@@ -2822,7 +2816,15 @@ export const lineCustomSeries = [
     type: 'Line' 
   },
 
-  { dataSource: lineChartData[1],
+  { dataSource: [
+    { x: new Date(2005, 0, 1), y: 21 },
+    { x: new Date(2005, 1, 1), y: 24 },
+    { x: new Date(2005, 2, 1), y: 36 },
+    { x: new Date(2005, 3, 1), y: 38 },
+    { x: new Date(2005, 4, 1), y: 54 },
+    { x: new Date(2005, 5, 1), y: 57 },
+    { x: new Date(2005, 6, 1), y: 70 },
+  ],
     xName: 'x',
     yName: 'y',
     name: 'Project B',
@@ -2830,7 +2832,15 @@ export const lineCustomSeries = [
     marker: { visible: true, width: 10, height: 10 },
     type: 'Line' },
 
-  { dataSource: lineChartData[2],
+  { dataSource: [
+    { x: new Date(2005, 0, 1), y: 21 },
+    { x: new Date(2005, 1, 1), y: 24 },
+    { x: new Date(2005, 5, 1), y: 36 },
+    { x: new Date(2005, 7, 1), y: 38 },
+    { x: new Date(2005, 8, 1), y: 54 },
+    { x: new Date(2005, 10, 1), y: 57 },
+    { x: new Date(2005, 11, 1), y: 70 },
+  ],
     xName: 'x',
     yName: 'y',
     name: 'Project C',
@@ -2945,29 +2955,8 @@ export const stackedPrimaryYAxis = {
 export const EditorData = () => (
   <div>
     <h3>
-      Try React
-      React has been designed from the start for gradual adoption, and you can use as little or as much React as you need. Whether you want to get a taste of React, add some interactivity to a simple HTML page, or start a complex React-powered app, the links in this section will help you get started.
 
-      Online Playgrounds
-      If you’re interested in playing around with React, you can use an online code playground. Try a Hello World template on CodePen, CodeSandbox, or Stackblitz.
-
-      If you prefer to use your own text editor, you can also download this HTML file, edit it, and open it from the local filesystem in your browser. It does a slow runtime code transformation, so we’d only recommend using this for simple demos.
-
-      Add React to a Website
-      You can add React to an HTML page in one minute. You can then either gradually expand its presence, or keep it contained to a few dynamic widgets.
-
-      Create a New React App
-      When starting a React project, a simple HTML page with script tags might still be the best option. It only takes a minute to set up!
-
-      As your application grows, you might want to consider a more integrated setup. There are several JavaScript toolchains we recommend for larger applications. Each of them can work with little to no configuration and lets you take full advantage of the rich React ecosystem. Learn how.
-
-      Learn React
-      People come to React from different backgrounds and with different learning styles. Whether you prefer a more theoretical or a practical approach, we hope you’ll find this section helpful.
-
-      If you prefer to learn by doing, start with our practical tutorial.
-      If you prefer to learn concepts step by step, start with our guide to main concepts.
       Like any unfamiliar technology, React does have a learning curve. With practice and some patience, you will get the hang of it.
-
       
     </h3>
   </div>
