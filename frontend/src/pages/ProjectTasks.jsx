@@ -14,6 +14,7 @@ import {
   RichTextEditorComponent,
   Toolbar
 } from '@syncfusion/ej2-react-richtexteditor';
+import jwtDecode from 'jwt-decode'
 
 
 
@@ -25,6 +26,9 @@ const Kanban = () => {
     fetchTasks(); // Call fetchProjects inside useEffect
   }, []);
 
+  const token = localStorage.getItem('user');
+  const decodedToken = jwtDecode(token);
+  const { _id, email, accountType } = decodedToken;
   const [tasks, setTasks] = useState([]);
   const [taskEditedId, setTaskEditedId] = useState(null);
 
@@ -179,13 +183,14 @@ const Kanban = () => {
       <Header category="App" title="Kanban" />
        {/* Modal toggle button */}
         <div className="sticky-button">
+        {accountType=='admin'&&
         <button
           onClick={toggleModal}
           className="block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           type="button"
         >
           Add Task
-        </button>
+        </button>}
 
       </div>
         <KanbanComponent
@@ -212,13 +217,13 @@ const Kanban = () => {
               >
                Edit Task
               </button>
-
+              {accountType=='admin'&&
               <button
                 className="mr-5 mt-1 mb-2 bg-white hover:bg-red-600 hover:text-white hover:cursor-pointer text-black font-bold py-2 px-5"
                 onClick={() => handleDeleteTask(task._id)} // Step 6: Add onClick event to delete the task
               >
                 Delete Task
-              </button>
+              </button>}
             </div>
               </div>
             ),
@@ -515,7 +520,8 @@ const Kanban = () => {
               <label htmlFor="Title" className="block mb-2 text-sm font-medium text-gray-900 ">
                 Title
               </label>
-              <input
+              <input 
+                readOnly={accountType !== 'admin'}
                 type="text"
                 name="Title"
                 id="Title"
@@ -537,6 +543,7 @@ const Kanban = () => {
               onChange={handleInputChange}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
               required
+              disabled={accountType !== 'admin'}
             >
               <option value="Low">Low</option>
               <option value="Normal">Normal</option>
@@ -567,6 +574,7 @@ const Kanban = () => {
                 Summary
               </label>
               <input
+                readOnly={accountType !== 'admin'}
                 type="text"
                 name="Summary"
                 id="Summary"
@@ -582,6 +590,7 @@ const Kanban = () => {
                 CreationDate
               </label>
               <input
+                readOnly={accountType !== 'admin'}
                 type="date"
                 name="CreationDate"
                 id="CreationDate"
@@ -597,6 +606,7 @@ const Kanban = () => {
                 ExpirationDate
               </label>
               <input
+                readOnly={accountType !== 'admin'}
                 type="date"
                 name="ExpirationDate"
                 id="ExpirationDate"
@@ -612,6 +622,7 @@ const Kanban = () => {
                 CreatedBy
               </label>
               <input
+                readOnly={accountType !== 'admin'}
                 type="text"
                 name="CreatedBy"
                 id="CreatedBy"
@@ -627,6 +638,7 @@ const Kanban = () => {
                 Color
               </label>
               <input
+                readOnly={accountType !== 'admin'}
                 type="color"
                 name="Color"
                 id="Color"

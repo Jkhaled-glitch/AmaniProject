@@ -13,6 +13,9 @@ const Projects = () => {
   const token = localStorage.getItem('user');
   const decodedToken = jwtDecode(token);
   const { _id, email, accountType } = decodedToken;
+  const toolbarUser=['Search', 'Update']
+  const toolbarAdmin=['Search', 'Delete', 'Update']
+  const toolbarTab=accountType=='admin'?toolbarAdmin : toolbarUser;
 
   const navigate = useNavigate()
   //const [statusOptions, setStatusOptions] = useState(["To Do", "In Progress", "Testing", "Done"]);
@@ -58,7 +61,7 @@ const Projects = () => {
     employeename: '',
     status: '',
     tasks: '',
-    employeeEmail: email ,
+    employeeEmail: [],
     domain:'',
 
   });
@@ -78,7 +81,6 @@ const Projects = () => {
   };
   
   const handleSubmit = async (event) => {
-    console.log("submit");
     event.preventDefault();
     try {
       const updatedFormValues = { ...formValues, status: selectedStatus, domain: selectedDomain };
@@ -231,6 +233,7 @@ const Projects = () => {
       <Header category="Page" title="Projects" />
              {/* Modal toggle button */}
              <div className="sticky-button">
+        {accountType=='admin'&&
         <button
           onClick={toggleModal}
           className="block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -238,6 +241,7 @@ const Projects = () => {
         >
           Add Project
         </button>
+        }
       </div>
 
       <div className="grid-container">
@@ -246,7 +250,7 @@ const Projects = () => {
           dataSource={projects}
           allowPaging
           allowSorting
-          toolbar={['Search', 'Delete', 'Update']}
+          toolbar={toolbarTab}
           width="auto"
 
           editSettings={{ allowEditing: true, allowDeleting: true }}
@@ -254,8 +258,8 @@ const Projects = () => {
           actionComplete={handleDelete}
         >
           <ColumnsDirective>
-            <ColumnDirective field="projecttitle" headerText="Project Title" />
-            <ColumnDirective field="employeename" headerText="Employee Name" />
+            <ColumnDirective isPrimaryKey={true} field="projecttitle" headerText="Project Title" />
+            <ColumnDirective isPrimaryKey={true} field="employeename" headerText="Employee Name" />
             <ColumnDirective isPrimaryKey={true} field="status" headerText="Status" template={renderStatusSelect} />
             <ColumnDirective isPrimaryKey={true} field="domain" headerText="Domain" template={renderDomainSelect} />
             <ColumnDirective isPrimaryKey={true} headerText="Tasks" template={renderViewTasksButton} />
