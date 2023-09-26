@@ -13,9 +13,9 @@ const Projects = () => {
   const token = localStorage.getItem('user');
   const decodedToken = jwtDecode(token);
   const { _id, email, accountType } = decodedToken;
-  const toolbarUser=['Search', 'Update']
-  const toolbarAdmin=['Search', 'Delete', 'Update']
-  const toolbarTab=accountType=='admin'?toolbarAdmin : toolbarUser;
+  const toolbarUser = ['Search', 'Update']
+  const toolbarAdmin = ['Search', 'Delete', 'Update']
+  const toolbarTab = accountType == 'admin' ? toolbarAdmin : toolbarUser;
 
   const navigate = useNavigate()
   //const [statusOptions, setStatusOptions] = useState(["To Do", "In Progress", "Testing", "Done"]);
@@ -24,26 +24,26 @@ const Projects = () => {
 
   //const [domainOptions, setDomainOptions] = useState(["web development", "apps development", "graphic design ui ux", "mobile development", "it consulting", "digital marketing", "referencing"]);
   const [selectedDomain, setSelectedDomain] = useState("");
-// Add the domain options to your state
+  // Add the domain options to your state
   const domainOptions = [
-  "web development",
-  "apps development",
-  "graphic design ui ux",
-  "mobile development",
-  "it consulting",
-  "digital marketing",
-  "referencing"
+    "web development",
+    "apps development",
+    "graphic design ui ux",
+    "mobile development",
+    "it consulting",
+    "digital marketing",
+    "referencing"
   ];
-  
+
   const renderViewTasksButton = (data) => {
     return (
-      <button 
+      <button
         onClick={() => handleViewTasks(data)}
         class="mr-5 bg-gray-200 hover:bg-gray-300 border border-gray-400 text-black font-bold py-2 px-6 rounded-md"      >
         View Tasks
       </button>
     );
-    
+
   };
 
   const handleViewTasks = (rowData) => {
@@ -62,7 +62,7 @@ const Projects = () => {
     status: '',
     tasks: '',
     employeeEmail: [],
-    domain:'',
+    domain: '',
 
   });
 
@@ -70,20 +70,20 @@ const Projects = () => {
     const { name, value } = event.target;
     setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
   };
-   
+
   const handleAddProject = async (projectData) => {
-    try {
-      const response = await axios.post(`http://localhost:5000/projects/addproject`, projectData);
-      console.log(response.data); // Output the response message from the backend
+    try {  
+      const res = await axios.post(`http://localhost:5000/projects/addproject`, projectData);
+      console.log(res)
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const updatedFormValues = { ...formValues, status: selectedStatus, domain: selectedDomain };
+      const updatedFormValues = { ...formValues, status: selectedStatus,employeeEmail: selectedEmployees, domain: selectedDomain };
       await handleAddProject(updatedFormValues);
       closeModal();
       // Optionally, you can fetch the updated admins data here
@@ -92,10 +92,10 @@ const Projects = () => {
       console.error(error);
     }
   };
-  
-  
+
+
   //
-  
+
   const closeModal = () => {
     setModalVisible(false);
   };
@@ -103,7 +103,7 @@ const Projects = () => {
 
   useEffect(() => {
     let isMounted = true;
-
+    fetchEmployees()
     fetchProjects()
       .then((response) => {
         if (isMounted) {
@@ -113,15 +113,15 @@ const Projects = () => {
       .catch((error) => {
         console.error(error);
       });
-      return () => {
-        isMounted = false;
-      };
-    }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [projects, setProjects] = useState([]);
 
   const fetchProjects = async () => {
-    const url = accountType=='admin' ? `http://localhost:5000/projects`: `http://localhost:5000/projects/getbyuseremail/${email}`
+    const url = accountType == 'admin' ? `http://localhost:5000/projects` : `http://localhost:5000/projects/getbyuseremail/${email}`
     try {
       const response = await axios.get(url);
       setProjects(response.data);
@@ -129,6 +129,27 @@ const Projects = () => {
       console.error(error);
     }
   };
+
+  const [employees, setEmployees] = useState([]);
+
+  const fetchEmployees = async () => {
+    const url = 'http://localhost:5000/users';
+    try {
+      const response = await axios.get(url);
+      const users = response.data.filter(user => user.accountType === 'user');
+      setEmployees(users);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
+
+
+
+
+
 
   const handleDelete = async (args) => {
     const data = args.data;
@@ -153,7 +174,7 @@ const Projects = () => {
       console.error(error);
     }
   };
-  
+
   const renderDomainSelect = (data) => {
     const handleDomainChange = async (newValue) => {
       // Update the domain locally first
@@ -164,7 +185,7 @@ const Projects = () => {
         return project;
       });
       setProjects(updatedProjects);
-  
+
       // Update the domain in the backend
       try {
         await axios.put(`http://localhost:5000/projects/${data._id}`, { domain: newValue });
@@ -173,7 +194,7 @@ const Projects = () => {
         console.error(error);
       }
     };
-  
+
     return (
       <div>
         <select
@@ -190,18 +211,18 @@ const Projects = () => {
       </div>
     );
   };
-  
+
   const renderStatusSelect = (data) => {
     const handleStatusChange = async (newValue) => {
       // Update the domain locally first
       const updatedProjects = projects.map((project) => {
         if (project._id === data._id) {
-          return { ...project,status: newValue };
+          return { ...project, status: newValue };
         }
         return project;
       });
       setProjects(updatedProjects);
-  
+
       // Update the domain in the backend
       try {
         await axios.put(`http://localhost:5000/projects/${data._id}`, { status: newValue });
@@ -210,7 +231,7 @@ const Projects = () => {
         console.error(error);
       }
     };
-  
+
     return (
       <div>
         <select
@@ -228,24 +249,30 @@ const Projects = () => {
     );
   };
 
+
+  console.log(employees)
+
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <Header category="Page" title="Projects" />
-             {/* Modal toggle button */}
-             <div className="sticky-button">
-        {accountType=='admin'&&
-        <button
-          onClick={toggleModal}
-          className="block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          type="button"
-        >
-          Add Project
-        </button>
+      {/* Modal toggle button */}
+      <div className="sticky-button">
+        {accountType == 'admin' &&
+          <button
+            onClick={toggleModal}
+            className="block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            type="button"
+          >
+            Add Project
+          </button>
         }
       </div>
 
       <div className="grid-container">
-      <GridComponent
+        <GridComponent
           id="gridcomp"
           dataSource={projects}
           allowPaging
@@ -267,19 +294,19 @@ const Projects = () => {
           <Inject services={[Page, Search, Toolbar, Edit, Sort, Filter, Selection]} />
         </GridComponent>
       </div>
-{/* Main modal */}
-{isModalVisible && (
+      {/* Main modal */}
+      {isModalVisible && (
         <div className="modal-container">
           <div className="modal-content">
             <div className="modal-header">
               <h3 className="text-xl font-semibold text-gray-900 ">
-              Add Project
+                Add Project
               </h3>
               <button
                 onClick={closeModal}
                 className="modal-close-button btn-close"
                 data-modal-hide="defaultModal"
-                
+
               >
                 <svg
                   className="w-3 h-3"
@@ -298,15 +325,15 @@ const Projects = () => {
                 </svg>
                 <span className="sr-only">Close modal</span>
               </button>
-              </div>
-              <div className="modal-body">
-              <form className="space-y-6" onSubmit={(e)=>handleSubmit(e)}>
+            </div>
+            <div className="modal-body">
+              <form className="space-y-6" onSubmit={(e) => handleSubmit(e)}>
                 <div>
-                <label
+                  <label
                     htmlFor="projecttitle"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                     Projecttitle
+                    Projecttitle
                   </label>
                   <input
                     type="text"
@@ -321,75 +348,84 @@ const Projects = () => {
                 </div>
                 <div>
                   <label
-                    htmlFor="employeename"
+                    htmlFor="employees"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Employeename
+                    Employees
                   </label>
-                  <input
-                    type="text"
-                    name="employeename"
-                    id="employeename"
-                    value={formValues.employeename}
-                    onChange={handleInputChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 "
-                    placeholder="Employeename"
+                  <select
+                    multiple
+                    name="employees"
+                    id="employees"
+                    value={selectedEmployees}
+                    onChange={(e) => {
+                      const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+                      setSelectedEmployees(selectedOptions);
+                    }}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
                     required
-                  />
+                  >
+                    {employees.map((employee) => (
+                      <option key={employee._id} value={employee.email}>
+                        {employee.userName + '  ( ' + employee.email + ' )'}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-  <div>
- <label htmlFor="status" className="block mb-2 text-sm font-medium text-gray-900">
-    Status
-  </label>
-  <select
-    name="status"
-    id="status"
-    value={selectedStatus}
-    onChange={(e) => setSelectedStatus(e.target.value)}
-    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
-    required
-  >
-    <option value="">Select Status</option>
-    {statusOptions.map((status) => (
-      <option key={status} value={status}>
-        {status}
-      </option>
-    ))}
-  </select>
-</div>
-<div>
-  <label htmlFor="domain" className="block mb-2 text-sm font-medium text-gray-900">
-    Domain
-  </label>
-  <select
-    name="domain"
-    id="domain"
-    value={selectedDomain}
-    onChange={(e) => setSelectedDomain(e.target.value)}
-    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
-    required
-  >
-    <option value="">Select Domain</option>
-    {domainOptions.map((domain) => (
-      <option key={domain} value={domain}>
-        {domain}
-      </option>
-    ))}
-  </select>
-</div>
+
+                <div>
+                  <label htmlFor="status" className="block mb-2 text-sm font-medium text-gray-900">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    id="status"
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
+                    required
+                  >
+                    <option value="">Select Status</option>
+                    {statusOptions.map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="domain" className="block mb-2 text-sm font-medium text-gray-900">
+                    Domain
+                  </label>
+                  <select
+                    name="domain"
+                    id="domain"
+                    value={selectedDomain}
+                    onChange={(e) => setSelectedDomain(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400"
+                    required
+                  >
+                    <option value="">Select Domain</option>
+                    {domainOptions.map((domain) => (
+                      <option key={domain} value={domain}>
+                        {domain}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 <div className="modal-footer">
-            <button
+                  <button
                     data-modal-hide="defaultModal"
                     type="submit"
                     className="text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
                   >
-          Submit
-        </button>
-            </div>
+                    Submit
+                  </button>
+                </div>
               </form>
             </div>
-            
+
           </div>
         </div>
       )}

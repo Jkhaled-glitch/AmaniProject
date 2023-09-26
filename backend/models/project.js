@@ -14,7 +14,7 @@ const Project = mongoose.model('project', {
         type: Array
     },
     employeeEmail: {
-        type: String
+        type: Array
     },
     domain: {
         type: String
