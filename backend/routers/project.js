@@ -22,7 +22,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.get('/:domain', async (req, res) => {
+router.get('/domain/:domain', async (req, res) => {
   const domain= req.params.domain;
   try {
     const projects = await Project.find({domain:domain});

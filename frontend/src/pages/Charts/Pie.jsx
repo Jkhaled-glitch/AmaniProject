@@ -12,13 +12,13 @@ const Pie = () => {
 
   const fetchData = async () => {
     const numProjects = await fetchDataLength(`http://localhost:5000/projects`);
-    const numProjectsWebDevelopment = await fetchDataLength(`http://localhost:5000/projects/web development`);
-    const numProjectsAppsDevelopment = await fetchDataLength(`http://localhost:5000/projects/apps development`);
-    const numProjectsGraphicDesignUI_UX = await fetchDataLength(`http://localhost:5000/projects/graphic design ui ux`);
-    const numProjectsMobileDevelopment = await fetchDataLength(`http://localhost:5000/projects/mobile development`);
-    const numProjectsItConsulting = await fetchDataLength(`http://localhost:5000/projects/it consulting`);
-    const numProjectsDigitalMarketing = await fetchDataLength(`http://localhost:5000/projects/digital marketing`);
-    const numProjectsReferencing = await fetchDataLength(`http://localhost:5000/projects/referencing`);
+    const numProjectsWebDevelopment = await fetchDataLength(`http://localhost:5000/projects/domain/web development`);
+    const numProjectsAppsDevelopment = await fetchDataLength(`http://localhost:5000/projects/domain/apps development`);
+    const numProjectsGraphicDesignUI_UX = await fetchDataLength(`http://localhost:5000/projects/domain/graphic design ui ux`);
+    const numProjectsMobileDevelopment = await fetchDataLength(`http://localhost:5000/projects/domain/mobile development`);
+    const numProjectsItConsulting = await fetchDataLength(`http://localhost:5000/projects/domain/it consulting`);
+    const numProjectsDigitalMarketing = await fetchDataLength(`http://localhost:5000/projects/domain/digital marketing`);
+    const numProjectsReferencing = await fetchDataLength(`http://localhost:5000/projects/domain/referencing`);
 
     const getPercentage = (num) => {
       const result = (num * 100) / numProjects;
@@ -35,6 +35,8 @@ const Pie = () => {
       { x: 'Referencing', y: getPercentage(numProjectsReferencing), text:getPercentage(numProjectsReferencing)+'%' },
     ];
 
+    console.log(newData)
+
     // Filter out entries with 0% percentage
     const filteredData = newData.filter(item => item.y !== '0.00');
 
@@ -44,6 +46,10 @@ const Pie = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  console.log(data)
+
+  
 
   return (
     <div className="m-4 md:m-10 mt-24 p-10 bg-white dark:bg-secondary-dark-bg rounded-3xl">

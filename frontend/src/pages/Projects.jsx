@@ -249,9 +249,41 @@ const Projects = () => {
     );
   };
 
+  const renderEmployees = (data) => {
+    const handleDomainChange = async (newValue) => {
+      // Update the domain locally first
+      const updatedProjects = projects.map((project) => {
+        if (project._id === data._id) {
+          return { ...project, domain: newValue };
+        }
+        return project;
+      });
+      setProjects(updatedProjects);
 
-  console.log(employees)
-
+      // Update the domain in the backend
+      try {
+        await axios.put(`http://localhost:5000/projects/${data._id}`, { domain: newValue });
+        fetchProjects();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+console.log(data)
+    return (
+      <div>
+        <select
+          value=''
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-gray-500 dark:placeholder-gray-400"
+        >
+          {data.employeeEmail.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
   const [selectedEmployees, setSelectedEmployees] = useState([]);
 
 
@@ -285,8 +317,10 @@ const Projects = () => {
           actionComplete={handleDelete}
         >
           <ColumnsDirective>
-            <ColumnDirective isPrimaryKey={true} field="projecttitle" headerText="Project Title" />
-            <ColumnDirective isPrimaryKey={true} field="employeename" headerText="Employee Name" />
+            <ColumnDirective isPrimaryKey={true} field="projecttitle" headerText="Title" />
+            {accountType=='admin'&&
+            <ColumnDirective isPrimaryKey={true} field="employeeEmail" headerText="Employees" template={renderEmployees}  />
+          }
             <ColumnDirective isPrimaryKey={true} field="status" headerText="Status" template={renderStatusSelect} />
             <ColumnDirective isPrimaryKey={true} field="domain" headerText="Domain" template={renderDomainSelect} />
             <ColumnDirective isPrimaryKey={true} headerText="Tasks" template={renderViewTasksButton} />
